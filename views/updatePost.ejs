@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Form</title>
+    <style>
+        body {
+            background-color: #ADD8E6; /* Light blue background */
+            color: black; /* Change text color for better contrast */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white; /* White background for form container */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .form-group button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+        .hidden {
+            display: none; /* Hide content initially */
+        }
+    </style>
+</head>
+<body>
+    <div id="loading" class="container">
+        <h1>Loading...</h1>
+    </div>
+    <div id="content" class="container hidden">
+        <h1>Upload Your Details</h1>
+        <form id="makepostform" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="details">Details:</label>
+                <input type="text" id="details" name="details" required>
+            </div>
+            <div class="form-group">
+                <label for="type">Type:</label>
+                <input type="text" id="type" name="type" required>
+            </div>
+            <div class="form-group">
+                <label for="photo">Upload Photo:</label>
+                <input type="file" id="photo" name="photo" accept="image/*" required>
+            </div>
+            <div class="form-group">
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            const loadingDiv = document.getElementById('loading');
+            const contentDiv = document.getElementById('content');
+
+            if (!token) {
+                alert('You are not authorized.');
+                window.location.href = '/login'; // Redirect to login if no token
+                return;
+            }
+
+            fetch('/user/posts', { // Replace '/validate-token' with your token validation endpoint
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (response.status === 401) {
+                    // If the token is invalid or missing, redirect to the login page
+                    alert('Session expired or invalid token. Redirecting to login.');
+                    window.location.href = '/login';
+                    return;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success === 1) { // Assuming the response has a 'valid' field
+                    loadingDiv.style.display = 'none';
+                    contentDiv.classList.remove('hidden');
+                } else {
+                    alert('Invalid token.');
+                    window.location.href = '/login'; // Redirect to login if token is invalid
+                }
+            })
+            .catch(error => {
+                console.error('Error verifying token:', error);
+                alert('There was an error validating the token.');
+                window.location.href = '/login'; // Redirect to login on error
+            });
+        });
+
+        // Handle form submission
+        const form = document.getElementById('makepostform');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const token = localStorage.getItem('token');
+            const formData = new FormData(this);
+            const postId = localStorage.getItem('postidforupdate');
+            
+            fetch(`/user/post/update/${postId}`, {
+                method: "PUT",
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            })
+            .then(response => {
+                if (response.status === 401) {
+                    // If the token is invalid or missing, redirect to the login page
+                    alert('Session expired or invalid token. Redirecting to login.');
+                    window.location.href = '/login';
+                    return;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success === 1) {
+                    alert("Post was updated successfully. Redirecting to home page.");
+                    window.location.href = '/home'; // Redirect to home on success
+                } else if (data.success === 0) {
+                    alert('There was an error updating the post. Please try again later.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

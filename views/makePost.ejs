@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Form</title>
+    <style>
+        body {
+            background-color: #e3f2fd; /* Softer light blue background */
+            color: #333; /* Darker text color for better readability */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 25px;
+            background-color: #ffffff; /* White background for form container */
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #0277bd; /* Darker blue for the heading */
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #0277bd; /* Matching the label color with the heading */
+        }
+        .form-group input[type="text"],
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+        .form-group button {
+            background-color: #0288d1; /* Matching button color with the heading */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .form-group button:hover {
+            background-color: #01579b;
+        }
+        .hidden {
+            display: none; /* Hide content initially */
+        }
+    </style>
+</head>
+<body>
+    <div id="loading" class="container">
+        <h1>Loading...</h1>
+    </div>
+    <div id="header" class="hidden"><%- include('header') %></div>
+
+    <div id="content" class="container hidden">
+        <h1>Upload Your Details</h1>
+        <form id="makepostform" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="details">Details:</label>
+                <input type="text" id="details" name="details" required>
+            </div>
+            <div class="form-group">
+                <label for="type">Type:</label>
+                <input type="text" id="type" name="type" required>
+            </div>
+            <div class="form-group">
+                <label for="photo">Upload Photo:</label>
+                <input type="file" id="photo" name="photo" accept="image/*" required>
+            </div>
+            <div class="form-group">
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="footer" class="hidden"><%- include('footer') %></div>
+
+    <script>
+        window.onload = function() {
+            const token = localStorage.getItem('token');
+            const loadingDiv = document.getElementById('loading');
+            const contentDiv = document.getElementById('content');
+            const header = document.getElementById('header');
+            const footer = document.getElementById('footer');
+
+            if (!token) {
+                alert('You are not authorized.');
+                window.location.href = '/login'; // Redirect to login if no token
+                return;
+            }
+
+            fetch('/user/posts', { 
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                var a = 0;
+                if (response.status === 401) {
+                    alert('Session expired or invalid token. Redirecting to login.');
+                    a = 1;
+                }
+                if (a === 1) {
+                    window.location.href = '/login';
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success == 1) {
+                    loadingDiv.style.display = 'none';
+                    contentDiv.classList.remove('hidden');
+                    header.classList.remove('hidden');
+                    footer.classList.remove('hidden');
+                } else {
+                    alert('Invalid token.');
+                    window.location.href = '/login';
+                }
+            })
+            .catch(error => {
+                console.error('Error verifying token:', error);
+                alert('There was an error validating the token.');
+                window.location.href = '/login';
+            });
+        };
+
+        // Handle form submission
+        const form = document.getElementById('makepostform');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const token = localStorage.getItem('token');
+            const formData = new FormData(this);
+
+            fetch('/user/post', {
+                method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            })
+            .then(response => {
+                if (response.status === 401) {
+                    alert('Session expired or invalid token. Redirecting to login.');
+                    window.location.href = '/login';
+                    return;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/home';
+                } else {
+                    alert('There was an error.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

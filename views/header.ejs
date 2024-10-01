@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f4f8; /* Light gray background */
+            color: #333; /* Dark text color */
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header-logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #0277bd; /* Dark blue color for the logo */
+            margin-bottom: 15px;
+        }
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .search-bar {
+            display: flex;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border-radius: 25px;
+            overflow: hidden;
+        }
+        .search-bar input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 25px 0 0 25px;
+            font-size: 16px;
+            outline: none;
+        }
+        .search-bar button {
+            padding: 10px;
+            border: none;
+            background-color: #0277bd;
+            color: white;
+            border-radius: 0 25px 25px 0;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .search-bar button:hover {
+            background-color: #01579b;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 18px;
+            transition: color 0.3s, text-decoration 0.3s;
+        }
+        .nav-links .home-link {
+            font-weight: bold;
+        }
+        .nav-links .home-link.active {
+            color: #d32f2f; /* Red color for active link */
+        }
+        .nav-links img {
+            width: 40px; /* Increased width */
+            height: 40px; /* Increased height */
+            border-radius: 50%;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+            color: #0277bd; /* Change color on hover */
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            .nav-links a {
+                margin: 10px 0;
+            }
+            .search-bar {
+                flex-direction: column;
+                max-width: 100%;
+            }
+            .search-bar input {
+                margin-bottom: 5px;
+                border-radius: 25px;
+                width: 100%;
+            }
+            .search-bar button {
+                width: 100%;
+                border-radius: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-logo">NITT LoSt&FounD</div>
+        <div class="header-content">
+            <div class="search-bar">
+                <input type="text" placeholder="Type of item...">
+                <button type="button">Search</button>
+            </div>
+            <div class="nav-links">
+                <a href="/home" class="home-link">Home</a>
+                <a href="/profile" class="home-link">About Us</a>
+                <a href="/makepost" class="home-link">Make A Post</a>
+                <a href="/profile"><img src="images/imagesforfrontend/download.png" alt="User Profile"></a>
+            </div>
+        </div>
+    </header>
+
+    <script>
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            if (link.href === window.location.href) {
+                link.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>

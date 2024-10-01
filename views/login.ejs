@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #add8e6; /* Light blue background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .login-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+        }
+
+        .form-group .required:after {
+            content: "*";
+            color: red;
+            margin-left: 5px;
+        }
+
+        .forgot-password-link {
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <h3 class="text-center">Login</h3>
+        <form id="loginform" method="POST" action="/user/login">
+            <div class="form-group">
+                <label for="studentId" class="required">Student ID</label>
+                <input type="text" name="studentId" class="form-control" id="studentId" placeholder="Enter your student ID" required>
+            </div>
+            <div class="form-group">
+                <label for="password" class="required">Password</label>
+                <input type="password" name="password" class="form-control" id="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" id="login" class="btn btn-primary btn-block">Login</button>
+            <a href="/forgot-password" class="forgot-password-link">Forgot your password?</a>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('loginform').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            fetch('/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success == 1) {
+                    alert('Login successful');
+                    localStorage.setItem('token', data.token);
+                    window.location.href = "/home";
+                } else if (data.success == 2) {
+                    alert('Invalid student ID');
+                } else if (data.success == 0) {
+                    alert('Invalid password');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+
+</html>

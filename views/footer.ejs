@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .footer {
+            background-color: #212121; /* Darker background for contrast */
+            color: #e0e0e0; /* Light gray text color for readability */
+            padding: 20px 0;
+            text-align: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .footer-logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #ff5722; /* Accent color for the logo */
+            margin-bottom: 15px;
+        }
+        .footer-section {
+            margin-bottom: 20px;
+            width: 200px;
+        }
+        .footer-section h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #ffeb3b; /* Yellow accent color for section titles */
+        }
+        .footer-section p, .footer-section a {
+            font-size: 14px;
+            color: #e0e0e0;
+            text-decoration: none;
+            line-height: 1.6;
+        }
+        .footer-section a:hover {
+            text-decoration: underline;
+            color: #ffeb3b; /* Accent color for links on hover */
+        }
+        .footer-bottom {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #9e9e9e;
+        }
+        @media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            .footer-section {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="footer-logo">NITT LoSt&FounD</div>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: support@lostandfound.com</p>
+                <p>Mobile: +91 98765 43210</p>
+            </div>
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <a href="/aboutuspage">Learn more about our mission</a>
+            </div>
+            <div class="footer-section">
+                <h3>Privacy Policy</h3>
+                <a href="/privacypolicypage">Read our privacy policy</a>
+            </div>
+            <div class="footer-section">
+                <h3>Terms & Conditions</h3>
+                <a href="/termsandconditionpage">Read our terms and conditions</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2024 NITT LoSt&FounD. All rights reserved.
+        </div>
+    </footer>
+</body>
+</html>
